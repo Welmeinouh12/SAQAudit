@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Classes réutilisables de la charte SQLAudit */
+@layer components {
+    .form-label {
+        @apply mb-2 block text-sm font-medium text-ink;
+    }
+
+    .form-input {
+        @apply h-[42px] w-full rounded-lg border-field px-3 text-sm text-ink placeholder:text-[#8A919C] focus:border-primary focus:ring-primary;
+    }
+
+    .form-error {
+        @apply mt-1.5 text-[13px] text-[#8B1A1A];
+    }
+
+    .btn-primary {
+        @apply inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-[#183F63] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    }
+
+    .btn-secondary {
+        @apply inline-flex h-11 items-center justify-center rounded-lg border border-field bg-white px-5 text-sm font-medium text-ink transition-colors hover:bg-page focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    }
+
+    /* Petit bouton dans les tableaux */
+    .btn-sm {
+        @apply h-9 px-3 text-[13px] font-normal;
+    }
+
+    /* Filtres « pilule » */
+    .pill {
+        @apply inline-flex h-9 items-center rounded-full border border-field bg-white px-4 text-[13px] text-ink transition-colors hover:bg-page;
+    }
+
+    .pill-active {
+        @apply border-primary bg-primary font-semibold text-white hover:bg-primary;
+    }
+
+    /* Tableaux */
+    .table-head {
+        @apply border-b border-line-soft text-xs font-semibold uppercase tracking-wide text-muted;
+    }
+
+    .table-row {
+        @apply border-b border-line-soft last:border-0;
+    }
+}
