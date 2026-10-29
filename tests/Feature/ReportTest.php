@@ -80,8 +80,10 @@ class ReportTest extends TestCase
             ->post('/reports', ['type' => 'detail', 'scope' => 'all', 'format' => 'xlsx'])
             ->assertSessionHasErrors('format');
 
-        // DBA et auditeur ont accès aux rapports, pas le lecteur
-        $this->actingAs(User::factory()->create(['role' => 'dba']))->get('/reports')->assertOk()->assertSee('Exports récents');
+        // DBA et auditeur ont accès aux rapports, pas le lecteur ; le DBA ne voit que les exports
+        $dba = User::factory()->create(['role' => 'dba']);
+        $this->actingAs($dba)->get('/reports')->assertOk()->assertSee('Exports récents')->assertDontSee('Nouveau rapport');
+        $this->actingAs($dba)->post('/reports', ['type' => 'detail', 'scope' => 'all', 'format' => 'pdf'])->assertForbidden();
         $this->actingAs(User::factory()->create(['role' => 'lecteur']))->get('/reports')->assertForbidden();
     }
 }

@@ -55,13 +55,15 @@ Route::middleware(['auth', 'role:dba,auditeur'])->group(function () {
     Route::get('/audits/{auditRun}/csv', [AuditController::class, 'csv'])->whereNumber('auditRun')->name('audits.csv');
 
     // Rapports : fichiers dans storage/app/reports, téléchargés uniquement via cette route protégée
+    // Le DBA consulte et télécharge les exports ; seul l'auditeur génère (route plus bas)
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
     Route::get('/reports/{reportExport}/download', [ReportController::class, 'download'])->name('reports.download');
 });
 
 // Espace auditeur : exceptions
 Route::middleware(['auth', 'role:auditeur'])->group(function () {
+    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+
     Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
     Route::patch('/exceptions/{exception}/approve', [ExceptionController::class, 'approve'])->name('exceptions.approve');
     Route::patch('/exceptions/{exception}/reject', [ExceptionController::class, 'reject'])->name('exceptions.reject');

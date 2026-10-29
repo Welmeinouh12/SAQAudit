@@ -2,7 +2,14 @@
 
 @section('title', 'Rapports')
 @section('heading', 'Rapports')
-@section('subheading', "Générer les rapports d'audit pour la direction, le contrôle interne ou les auditeurs externes")
+@php
+    // Le DBA ne génère pas de rapport : il ne voit que les exports récents
+    $canGenerate = auth()->user()->role !== 'dba';
+@endphp
+
+@section('subheading', $canGenerate
+    ? "Générer les rapports d'audit pour la direction, le contrôle interne ou les auditeurs externes"
+    : "Consulter et télécharger les rapports d'audit générés")
 
 @php
     // Grandes cartes « Type de rapport » : [valeur, titre, description]
@@ -14,20 +21,16 @@
 @endphp
 
 @section('content')
-    <div class="grid items-start gap-6 xl:grid-cols-[360px_1fr]">
+    <div @class(['grid items-start gap-6', 'xl:grid-cols-[360px_1fr]' => $canGenerate])>
 
+        @if ($canGenerate)
         {{-- Nouveau rapport --}}
         <x-card title="Nouveau rapport">
             @if ($instances->isEmpty())
                 {{-- Aucun audit terminé : le rapport serait vide --}}
                 <div class="mb-5 rounded-lg border border-[#F5D98B] bg-[#FEF3C7] px-4 py-3 text-sm text-[#854D0E]" role="status">
                     Aucun audit terminé pour le moment : le rapport serait vide.
-                    @if (auth()->user()->role === 'dba')
-                        Lancez d'abord un audit depuis
-                        <a href="{{ route('instances.index') }}" class="font-semibold underline">Instances</a> (bouton « Auditer »).
-                    @else
-                        Un DBA doit d'abord lancer un audit.
-                    @endif
+                    Un DBA doit d'abord lancer un audit.
                 </div>
             @endif
 
@@ -97,6 +100,7 @@
                 <button type="submit" class="btn-primary w-full">Générer le rapport</button>
             </form>
         </x-card>
+        @endif
 
         {{-- Exports récents --}}
         <x-card title="Exports récents">
